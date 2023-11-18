@@ -4,15 +4,21 @@ package com.example.jdnctamitams.controller;
 import com.example.jdnctamitams.dto.CancelRequestDto;
 import com.example.jdnctamitams.dto.RequestDto;
 import com.example.jdnctamitams.dto.ResponseDto;
+import com.example.jdnctamitams.dto.SignupRequestDto;
 import com.example.jdnctamitams.entity.Room;
 import com.example.jdnctamitams.entity.RoomUseTime;
 import com.example.jdnctamitams.security.UserDetailsImpl;
 import com.example.jdnctamitams.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 //@CrossOrigin("http://127.0.0.1:3000,http://localhost:3000/") // 프론트엔드의 주소값을 입력해야함 127.0.0.1은 Cros가 아니니까

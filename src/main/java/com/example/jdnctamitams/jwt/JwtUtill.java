@@ -1,6 +1,7 @@
 package com.example.jdnctamitams.jwt;
 
 
+import com.example.jdnctamitams.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Base64;
+import java.util.Date;
 
 @Slf4j(topic = "JwtUtill")
 @Component
@@ -24,6 +26,7 @@ public class JwtUtill {
 //    public static final String AUTHORIZATION_KEY = "auth"; // 이거 이름이 auth다
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer "; // 이거 이름이 "Bearer
+
     // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분 L은 롱타입이여서 들어간거
 
@@ -38,6 +41,7 @@ public class JwtUtill {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
     }
+    // 이런식으로 만들어서 뭘 한다.
 
     // header 에서 JWT 가져오기
     public String getJwtFromHeader(HttpServletRequest request) {
@@ -47,6 +51,19 @@ public class JwtUtill {
         }
         return null;
     }
+
+    // 토큰 생성
+    public String createToken(String username, UserRoleEnum role) {
+        Date date = new Date();
+
+        return BEARER_PREFIX +
+                Jwts.builder() // jwt를 만든다
+                        .setSubject(username) // 사용자 식별자값(ID)
+                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
+                        .setIssuedAt(date) // 발급일 발급은 지금 발급
+                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘 뭐로 싸인할거냐 키랑 알고리즘
+                        .compact(); // 만든다는 의미고 끝났다 이건 컴피트로 끝났다.
+    } //토큰을 만드는 형식
 
     // 토큰 검증
     public boolean validateToken(String token) { //요기서 validateToken는 대조한다라는 거다 대조한다라고 생각해라 값을 비교한다 라는 느낌 이건 토큰을 검증할 때 많이 사용한다. 서명을 통해서

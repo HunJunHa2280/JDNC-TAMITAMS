@@ -1,8 +1,10 @@
 package com.example.jdnctamitams.security;
 
 
+import com.example.jdnctamitams.entity.UserRoleEnum;
 import com.example.jdnctamitams.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -13,6 +15,9 @@ import java.util.Collection;
 //사용자의 상태 제어: 사용자 계정의 상태(만료 여부, 비밀번호 만료 여부, 계정 잠금 여부)를 설정할 수 있습니다.
 
 
+import java.util.ArrayList;
+
+
 public class UserDetailsImpl implements UserDetails {
 
     private final Users users;
@@ -21,9 +26,10 @@ public class UserDetailsImpl implements UserDetails {
         this.users = users;
     }
 
-//    public Users getUser() {
-//        return users;
-//    }
+
+    public Users getUser() {
+        return users;
+    }
 
     @Override
     public String getPassword() {
@@ -37,8 +43,15 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
+        UserRoleEnum role = users.getRole();
+        String authority = role.getAuthority();
+
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(simpleGrantedAuthority);
+
+        return authorities;
+    } // 역할을 가져온다는 의미다 그렇게 이해하자 대충 그렇게 아래꺼 사용하게 한다 이건 사용하려면 가져와라
 
     @Override
     public boolean isAccountNonExpired() {
